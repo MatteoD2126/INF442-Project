@@ -1,0 +1,56 @@
+#include "point.hpp" // include the header file
+
+#include <iostream> // for cout, endl for printing
+#include <cmath>    // for sqrt, fabs
+#include <cassert>  // for assert
+
+//constructor
+point::point() {
+    coords = new double[d];
+
+    for (int m = 0; m < d; m++)
+        coords[m] = 0.0;
+}
+
+//destructor
+point::~point() {
+    delete[] coords;
+}
+
+//printing coordinates and label
+void point::print() const {
+    for (int j = 0; j < d; j++)
+        std::cout << coords[j] << ' ';
+
+    //std::cout << name;
+}
+
+//calculatind and returning distance from a given point q
+double point::dist(const point &q) const {
+    double sqd = 0.0;
+
+    for (int m = 0; m < d; m++)
+        sqd += (coords[m] - q.coords[m]) * (coords[m] - q.coords[m]);
+
+    return sqrt(sqd);
+}
+
+// the variable d of the class point is static
+// hence, it must be initialized here
+int point::d = 0;
+
+bool point::set_dim(int _d) {
+    assert (_d > 0);
+    // TODO: Exercise 1
+    if (d == 0){
+        d = _d;
+        return true;
+    }else
+        return false;
+    
+}
+
+int point::get_dim() {
+    // TODO: Exercise 1
+    return d;
+}
