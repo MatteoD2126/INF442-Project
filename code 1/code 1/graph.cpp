@@ -7,6 +7,9 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <limits>
+#include <vector>
+
 
 /* graph -- method implementations */
 
@@ -179,4 +182,54 @@ void graph::load(std::ifstream &is) {
     }*/
     
     //NEW CODE FINISH
+}
+
+
+void graph::bellmanFord(int source) {
+    // Step 1: Initialize distances and predecessor
+    std::vector<double> distance(n, std::numeric_limits<double>::infinity());
+    std::vector<int> predecessor(n, -1);
+    distance[source] = 0;
+
+    // Step 2: Relax edges repeatedly
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < size; ++j) {
+            int u = edges[j]->get_source();
+            int v = edges[j]->get_destination();
+            double weight = edges[j]->get_weight();
+            if (distance[u] + weight < distance[v]) {
+                distance[v] = distance[u] + weight;
+                predecessor[v] = u;
+            }
+        }
+    }
+
+    // Step 3: Check for negative-weight cycles
+    for (int i = 0; i < size; ++i) {
+        int u = edges[i]->get_source();
+        int v = edges[i]->get_destination();
+        double weight = edges[i]->get_weight();
+        if (distance[u] + weight < distance[v]) {
+            std::cout << "Negative-weight cycle detected!" << std::endl;
+            return;
+        }
+    }
+
+    // Step 4: Print the shortest paths
+    std::cout << "Shortest paths from vertex " << node_names[source] << ":" << std::endl;
+    for (int i = 0; i < n; ++i) {
+        if (i != source) {
+            std::cout << "To vertex " << node_names[i] << ": ";
+            printPath(predecessor, i);
+            std::cout << " (Distance: " << distance[i] << ")" << std::endl;
+        }
+    }
+}
+
+void graph::printPath(const std::vector<int>& predecessor, int vertex) {
+    if (predecessor[vertex] != -1) {
+        printPath(predecessor, predecessor[vertex]);
+        std::cout << " -> ";
+    }
+    std::cout << node_names[vertex];
 }

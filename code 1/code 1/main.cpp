@@ -10,6 +10,8 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <vector>
+
 
 using namespace std;
 
@@ -35,9 +37,8 @@ int main(){
     for (int i = 0; i < c->get_n(); i++){
         c->get_point(i).print();
     }
+
+//    cout << "Shortest path calculated with Bellman Ford algorithm" << G->bellmanFord() << endl << "\n";
     
     return 0;
 }
-
-
-

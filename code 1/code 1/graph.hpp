@@ -2,23 +2,26 @@
 
 #include "cloud.hpp"
 #include "edge.hpp"
+#include <vector>
 
-/*  graph -- an array of edge pointers arranged by
- *  increasing length.  Allows iteration:
+
+/* graph -- an array of edge pointers arranged by
+ * increasing length. Allows iteration:
  *
- *  init_iteration() places current at
- *    the start of the array
- *  get_next() returns the current edge
- *    and advances to the next one
+ * init_iteration() places current at
+ * the start of the array
+ * get_next() returns the current edge
+ * and advances to the next one
  */
 class graph {
     edge **edges;
 
     long n; // the number of vertices(nodes).
     long size; // the number of edges.
-    long iterator_pos; //the position of the iterator
+    long iterator_pos; // the position of the iterator
 
-    std::string *node_names; //an array of the names of the nodes in the graph.
+    std::string *node_names; // an array of the names of the nodes in the graph.
+
 public:
     graph(const cloud &_c);
     graph(const cloud &_c, int _size);
@@ -36,4 +39,8 @@ public:
 
     void load(std::ifstream &is);
     static graph *load_matrix(std::ifstream &is);
+
+    // Bellman-Ford Algorithm
+    void bellmanFord(int source);
+    void printPath(const std::vector<int>& predecessor, int vertex);
 };
