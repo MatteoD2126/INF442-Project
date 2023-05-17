@@ -194,8 +194,8 @@ void graph::bellmanFord(int source) {
     // Step 2: Relax edges repeatedly
     for (int i = 0; i < n - 1; ++i) {
         for (int j = 0; j < size; ++j) {
-            int u = edges[j]->get_source();
-            int v = edges[j]->get_destination();
+            int u = edges[j]->get_p1();
+            int v = edges[j]->get_p2();
             double weight = edges[j]->get_weight();
             if (distance[u] + weight < distance[v]) {
                 distance[v] = distance[u] + weight;
@@ -206,8 +206,8 @@ void graph::bellmanFord(int source) {
 
     // Step 3: Check for negative-weight cycles
     for (int i = 0; i < size; ++i) {
-        int u = edges[i]->get_source();
-        int v = edges[i]->get_destination();
+        int u = edges[i]->get_p1();
+        int v = edges[i]->get_p2();
         double weight = edges[i]->get_weight();
         if (distance[u] + weight < distance[v]) {
             std::cout << "Negative-weight cycle detected!" << std::endl;
