@@ -38,6 +38,8 @@ int main(){
         c->get_point(i).print();
     }
 
+    cout << "\n";
+
     cout << "Shortest path calculated with Bellman Ford algorithm: " << G->bellmanFord() << endl << "\n";
     
     return 0;

@@ -181,96 +181,96 @@ void graph::load(std::ifstream &is) {
 
 
 
-// void graph::bellmanFord(int source) {
-//     // Step 1: Initialize distances and predecessor
-//     std::vector<double> distance(n, std::numeric_limits<double>::infinity());
-//     std::vector<int> predecessor(n, -1);
-//     distance[source] = 0;
+void graph::bellmanFord(int source) {
+    // Step 1: Initialize distances and predecessor
+    std::vector<double> distance(n, std::numeric_limits<double>::infinity());
+    std::vector<int> predecessor(n, -1);
+    distance[source] = 0;
 
-//     // Step 2: Relax edges repeatedly
-//     for (int i = 0; i < n - 1; ++i) {
-//         for (int j = 0; j < size; ++j) {
-//             int u = edges[j]->get_p1();
-//             int v = edges[j]->get_p2();
-//             double weight = edges[j]->get_weight();
-//             if (distance[u] + weight < distance[v]) {
-//                 distance[v] = distance[u] + weight;
-//                 predecessor[v] = u;
-//             }
-//         }
-//     }
+    // Step 2: Relax edges repeatedly
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < size; ++j) {
+            int u = edges[j]->get_p1();
+            int v = edges[j]->get_p2();
+            double weight = edges[j]->get_weight();
+            if (distance[u] + weight < distance[v]) {
+                distance[v] = distance[u] + weight;
+                predecessor[v] = u;
+            }
+        }
+    }
 
-//     // Step 3: Check for negative-weight cycles
-//     for (int i = 0; i < size; ++i) {
-//         int u = edges[i]->get_p1();
-//         int v = edges[i]->get_p2();
-//         double weight = edges[i]->get_weight();
-//         if (distance[u] + weight < distance[v]) {
-//             std::cout << "Negative-weight cycle detected!" << std::endl;
-//             return;
-//         }
-//     }
+    // Step 3: Check for negative-weight cycles
+    for (int i = 0; i < size; ++i) {
+        int u = edges[i]->get_p1();
+        int v = edges[i]->get_p2();
+        double weight = edges[i]->get_weight();
+        if (distance[u] + weight < distance[v]) {
+            std::cout << "Negative-weight cycle detected!" << std::endl;
+            return;
+        }
+    }
 
-//     // Step 4: Print the shortest paths
-//     std::cout << "Shortest paths from vertex " << node_names[source] << ":" << std::endl;
-//     for (int i = 0; i < n; ++i) {
-//         if (i != source) {
-//             std::cout << "To vertex " << node_names[i] << ": ";
-//             printPath(predecessor, i);
-//             std::cout << " (Distance: " << distance[i] << ")" << std::endl;
-//         }
-//     }
-// }
+    // Step 4: Print the shortest paths
+    std::cout << "Shortest paths from vertex " << node_names[source] << ":" << std::endl;
+    for (int i = 0; i < n; ++i) {
+        if (i != source) {
+            std::cout << "To vertex " << node_names[i] << ": ";
+            printPath(predecessor, i);
+            std::cout << " (Distance: " << distance[i] << ")" << std::endl;
+        }
+    }
+}
 
 // Function to find the shortest path using Dijkstra's algorithm
-// void graph::dijkstraShortestPath(vector<vector<Edge>>& graph, int numVertices, int startVertex, int endVertex) {
-//     // Create a vector to store the distances from the start vertex to all other vertices
-//     vector<double> distances(numVertices, std::numeric_limits<double>::infinity());
+void graph::dijkstraShortestPath(vector<vector<Edge>>& graph, int numVertices, int startVertex, int endVertex) {
+    // Create a vector to store the distances from the start vertex to all other vertices
+    vector<double> distances(numVertices, std::numeric_limits<double>::infinity());
 
-//     // Create a priority queue to store the vertices and their distances
-//     priority_queue<Vertex, vector<Vertex>, greater<Vertex>> pq;
+    // Create a priority queue to store the vertices and their distances
+    priority_queue<Vertex, vector<Vertex>, greater<Vertex>> pq;
 
-//     // Set the distance of the start vertex to 0 and push it into the priority queue
-//     distances[startVertex] = 0;
-//     pq.push(Vertex(startVertex, 0));
+    // Set the distance of the start vertex to 0 and push it into the priority queue
+    distances[startVertex] = 0;
+    pq.push(Vertex(startVertex, 0));
 
-//     // Process vertices until the priority queue becomes empty
-//     while (!pq.empty()) {
-//         // Get the vertex with the minimum distance from the priority queue
-//         Vertex current = pq.top();
-//         pq.pop();
+    // Process vertices until the priority queue becomes empty
+    while (!pq.empty()) {
+        // Get the vertex with the minimum distance from the priority queue
+        Vertex current = pq.top();
+        pq.pop();
 
-//         int currentVertex = current.id;
-//         double currentDistance = current.distance;
+        int currentVertex = current.id;
+        double currentDistance = current.distance;
 
-//         // If the current distance is greater than the recorded distance, skip the vertex
-//         if (currentDistance > distances[currentVertex]) {
-//             continue;
-//         }
+        // If the current distance is greater than the recorded distance, skip the vertex
+        if (currentDistance > distances[currentVertex]) {
+            continue;
+        }
 
-//         // Traverse through all the adjacent vertices of the current vertex
-//         for (const auto& edge : graph[currentVertex]) {
-//             int adjacentVertex = edge.target;
-//             double edgeWeight = edge.weight;
+        // Traverse through all the adjacent vertices of the current vertex
+        for (const auto& edge : graph[currentVertex]) {
+            int adjacentVertex = edge.target;
+            double edgeWeight = edge.weight;
 
-//             // Calculate the new distance
-//             double newDistance = currentDistance + edgeWeight;
+            // Calculate the new distance
+            double newDistance = currentDistance + edgeWeight;
 
-//             // If the new distance is shorter, update the distance and push the vertex into the priority queue
-//             if (newDistance < distances[adjacentVertex]) {
-//                 distances[adjacentVertex] = newDistance;
-//                 pq.push(Vertex(adjacentVertex, newDistance));
-//             }
-//         }
-//     }
+            // If the new distance is shorter, update the distance and push the vertex into the priority queue
+            if (newDistance < distances[adjacentVertex]) {
+                distances[adjacentVertex] = newDistance;
+                pq.push(Vertex(adjacentVertex, newDistance));
+            }
+        }
+    }
 
-//     // Check if a path from startVertex to endVertex exists
-//     if (distances[endVertex] == std::numeric_limits<double>::infinity()) {
-//         std::cout << "No path exists from the start vertex to the end vertex." << std::endl;
-//     } else {
-//         std::cout << "Shortest distance from the start vertex to the end vertex using Dijkstra's algorithm: " << distances[endVertex] << std::endl;
-//     }
-// }
+    // Check if a path from startVertex to endVertex exists
+    if (distances[endVertex] == std::numeric_limits<double>::infinity()) {
+        std::cout << "No path exists from the start vertex to the end vertex." << std::endl;
+    } else {
+        std::cout << "Shortest distance from the start vertex to the end vertex using Dijkstra's algorithm: " << distances[endVertex] << std::endl;
+    }
+}
 
 
 
