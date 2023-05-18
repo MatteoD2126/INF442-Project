@@ -21,6 +21,19 @@ struct Arc
     Arc(int start, int end, double cost) : start(start), end(end), cost(cost) {}
 };
 
+struct Path
+{
+    std::vector<int> vertices;
+    double cost;
+
+    Path(const std::vector<int>& vertices, double cost) : vertices(vertices), cost(cost) {}
+};
+
+bool ComparePaths(const Path& p1, const Path& p2)
+{
+    return p1.cost < p2.cost;
+}
+
 class Graph
 {
     int V; // number of vertices
@@ -132,6 +145,47 @@ public:
         return dist;
     }
 
+    void kShortestPaths(int source, int k, std::vector<int> &parent)
+    {
+        std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>,
+                            ComparePaths>
+            pq;
+
+        std::vector<Arc> initialPath;
+        initialPath.push_back(Arc(source, source, 0.0));
+        pq.push(initialPath);
+
+        int pathCount = 0;
+
+        while (!pq.empty() && pathCount < k)
+        {
+            std::vector<Arc> path = pq.top();
+            pq.pop();
+
+            int u = path.back().end;
+
+            if (u == target)
+            {
+                pathCount++;
+                printPath(path);
+            }
+
+            if (pathCount == k)
+            {
+                break;
+            }
+
+            for (const Arc &arc : adjList[u])
+            {
+                std::vector<Arc> newPath = path;
+                newPath.push_back(arc);
+                pq.push(newPath);
+            }
+        }
+
+        std::cout << "Number of paths found: " << pathCount << std::endl;
+    }
+
     void printShortestPath(const std::vector<int> &parent, int target)
     {
         std::stack<int> path;
@@ -184,10 +238,9 @@ void processInputFile(const std::string &filename, Graph &graph)
             graph.addArc(v1, v2, weight);
         }
     }
-    else {
+    else
+    {
         // TODO
-
-        
     }
 }
 
