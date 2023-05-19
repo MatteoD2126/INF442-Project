@@ -4,35 +4,35 @@
 #include <limits>
 #include <stack>
 #include <string>
-//for input form the file
+// for input form the file
 #include <sstream>
 #include <fstream>
 #include <omp.h>
 
 #define INF std::numeric_limits<double>::infinity()
-//two chose a sequential or a parallelized version
+// two chose a sequential or a parallelized version
 #define DIJKSTRAOPTION 1
 #define FILETYPE 0
 
-//the structure for edges in the graph
+// the structure for edges in the graph
 struct Arc
 {
     int start;
     int end;
     double cost;
 
-    //constructor
+    // constructor
     Arc(int start, int end, double cost) : start(start), end(end), cost(cost) {}
 };
 
-//class describing the structure of graph
+// class describing the structure of graph
 class Graph
 {
-    int V; // number of vertices
-    std::vector<std::vector<Arc>> adjList;// adjacency list to describe a set of neighbours of vertices in the graph
+    int V;                                 // number of vertices
+    std::vector<std::vector<Arc>> adjList; // adjacency list to describe a set of neighbours of vertices in the graph
 
 public:
-    //constructor
+    // constructor
     Graph(int V) : V(V), adjList(V) {}
 
     void addArc(int start, int end, double cost)
@@ -41,7 +41,7 @@ public:
         adjList[start].push_back(Arc(start, end, cost));
     }
 
-    std::vector<double> dijkstra(int source)
+    std::vector<double> dijkstra(int source, std::vector<int> &parent)
     {
         if (DIJKSTRAOPTION == 0)
         {
@@ -52,13 +52,13 @@ public:
     }
 
     // returns the vector of distances of the shortest paths for all vertices
-    std::vector<double> regularDijkstra(int source)//, std::vector<int> &parent)
+    std::vector<double> regularDijkstra(int source, std::vector<int> &parent)
     {
-        std::vector<int> parent(V, -1);
+        // std::vector<int> parent(V, -1);
         std::vector<double> dist(V, INF);
         // build the priority queue to choose the closest vertex
-        std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int> >,
-                            std::greater<std::pair<double, int> > >
+        std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>,
+                            std::greater<std::pair<double, int>>>
             pq;
         dist[source] = 0.0;
         pq.push(std::make_pair(0.0, source));
@@ -95,9 +95,8 @@ public:
         return dist;
     }
 
-    std::vector<double> parallelDijkstra(int source)
+    std::vector<double> parallelDijkstra(int source, std::vector<int> &parent)
     {
-        std::vector<int> parent(V, -1);
         std::vector<double> dist(V, INF);
         std::vector<bool> visited(V, false);
 
@@ -109,7 +108,7 @@ public:
             int u = -1;
             double minDist = INF;
 
-// find the vertex with the minimum distance among the unvisited vertices
+// Find the vertex with the minimum distance among the unvisited vertices
 #pragma omp parallel for
             for (int j = 0; j < V; ++j)
             {
@@ -125,7 +124,7 @@ public:
 
             visited[u] = true;
 
-// update the distances of the neighboring vertices in parallel
+// Update the distances of the neighboring vertices in parallel
 #pragma omp parallel for
             for (const Arc &arc : adjList[u])
             {
@@ -173,8 +172,6 @@ void processInputFile(const std::string &filename, Graph &graph)
 {
     std::ifstream is(filename);
     std::string line;
-    
-    
 
     if (FILETYPE == 0)
     {
@@ -183,9 +180,6 @@ void processInputFile(const std::string &filename, Graph &graph)
         std::stringstream ls;
         ls << line;
         ls >> nb_points >> nb_arcs;
-        int v1, v2;
-        double weight;
-        int res;
         int v1, v2;
         double weight;
         int res;
@@ -198,7 +192,8 @@ void processInputFile(const std::string &filename, Graph &graph)
             graph.addArc(v1, v2, weight);
         }
     }
-    else {
+    else
+    {
         int nb_points, nb_arcs, nb_res;
         std::getline(is, line, '\n');
         std::stringstream ls;
@@ -207,7 +202,7 @@ void processInputFile(const std::string &filename, Graph &graph)
 
         // skip some lines
         // TODO
-        
+
         int v1, v2, res;
         double weight;
         for (int j = 0; j < nb_arcs; j++)
@@ -232,9 +227,9 @@ int main()
     std::cout << "Enter the source vertex and target vertex: ";
     std::cin >> source >> target;
 
-    //std::vector<int> parent(nb_points, -1);
-    //std::vector<double> dist = graph.dijkstra(source, parent);
-    std::vector<double> dist = graph.dijkstra(source);
+    std::vector<int> parent(nb_points, -1);
+    std::vector<double> dist = graph.dijkstra(source, parent);
+    // std::vector<double> dist = graph.dijkstra(source);
 
     std::cout << "Shortest distance from source to target: " << dist[target] << std::endl;
 

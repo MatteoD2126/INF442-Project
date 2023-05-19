@@ -46,9 +46,6 @@ public:
 
             for (const Arc& arc : adjList[u]) {
                 int v = arc.end;
-                if (v == 6){
-                    std::cout << "v == 6" << std::endl;
-                }
                 double cost = arc.cost;
 
                 double delay = delayFunc(cost);
@@ -96,7 +93,7 @@ int main() {
     int nb_points, nb_arcs;
     
     //std::ifstream is("testtest.txt");
-    std::ifstream is("test.txt");
+    std::ifstream is("testtest.txt");
     std::string line;
     std::getline(is, line, '\n');
     std::stringstream ls;
