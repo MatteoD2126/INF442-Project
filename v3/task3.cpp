@@ -170,7 +170,7 @@ public:
         initialPath.addArc(Arc(source, source, 0.0));
         pq.push(initialPath);
 
-        int pathCount = 0;
+        int pathCount = -1;
 
         while (!pq.empty() && pathCount < k)
         {
