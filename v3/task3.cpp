@@ -10,7 +10,7 @@
 
 #define INF std::numeric_limits<double>::infinity()
 #define DIJKSTRAOPTION 1
-#define FILETYPE 0
+// #define FILETYPE 0
 
 struct Arc
 {
@@ -26,12 +26,20 @@ struct Path
     std::vector<int> vertices;
     double cost;
 
-    Path(const std::vector<int>& vertices, double cost) : vertices(vertices), cost(cost) {}
+    Path(const std::vector<int> &vertices, double cost) : vertices(vertices), cost(cost) {}
 };
 
-bool ComparePaths(const Path& p1, const Path& p2)
+bool ComparePaths(const std::vector<Arc> &p1, const std::vector<Arc> &p2)
 {
-    return p1.cost < p2.cost;
+    double p1Cost = 0.0;
+    for (const Arc &arc : p1)
+        p1Cost += arc.cost;
+
+    double p2Cost = 0.0;
+    for (const Arc &arc : p2)
+        p2Cost += arc.cost;
+
+    return p1Cost < p2Cost;
 }
 
 class Graph
@@ -145,11 +153,9 @@ public:
         return dist;
     }
 
-    void kShortestPaths(int source, int k, std::vector<int> &parent)
+    void kShortestPaths(int source, int target, int k, std::vector<int> &parent)
     {
-        std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>,
-                            ComparePaths>
-            pq;
+        std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
 
         std::vector<Arc> initialPath;
         initialPath.push_back(Arc(source, source, 0.0));
@@ -184,6 +190,16 @@ public:
         }
 
         std::cout << "Number of paths found: " << pathCount << std::endl;
+    }
+
+    void printPath(const std::vector<Arc> &path)
+    {
+        std::cout << "Path: ";
+        for (const Arc &arc : path)
+        {
+            std::cout << arc.start << "->" << arc.end << " ";
+        }
+        std::cout << std::endl;
     }
 
     void printShortestPath(const std::vector<int> &parent, int target)
@@ -222,25 +238,13 @@ void processInputFile(const std::string &filename, Graph &graph)
     int v1, v2;
     double weight;
     int res;
-
-    if (FILETYPE == 0)
+    for (int j = 0; j < nb_arcs; j++)
     {
-
-        int v1, v2;
-        double weight;
-        int res;
-        for (int j = 0; j < nb_arcs; j++)
-        {
-            std::getline(is, line, '\n');
-            ls.str(line);
-            ls.clear();
-            ls >> v1 >> v2 >> weight >> res;
-            graph.addArc(v1, v2, weight);
-        }
-    }
-    else
-    {
-        // TODO
+        std::getline(is, line, '\n');
+        ls.str(line);
+        ls.clear();
+        ls >> v1 >> v2 >> weight >> res;
+        graph.addArc(v1, v2, weight);
     }
 }
 
