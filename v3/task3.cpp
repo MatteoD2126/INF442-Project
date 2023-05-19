@@ -21,14 +21,23 @@ struct Arc
     Arc(int start, int end, double cost) : start(start), end(end), cost(cost) {}
 };
 
-bool ComparePaths(const std::vector<Arc> &p1, const std::vector<Arc> &p2)
+struct Path
+{
+    std::vector<Arc> arcs;
+    double cost;
+
+    Path() : cost(0.0) {}
+    Path(const std::vector<Arc> &arcs, double cost) : arcs(arcs), cost(cost) {}
+};
+
+bool ComparePaths(const Path &p1, const Path &p2)
 {
     double p1Cost = 0.0;
-    for (const Arc &arc : p1)
+    for (const Arc &arc : p1.arcs)
         p1Cost += arc.cost;
 
     double p2Cost = 0.0;
-    for (const Arc &arc : p2)
+    for (const Arc &arc : p2.arcs)
         p2Cost += arc.cost;
 
     return p1Cost < p2Cost;
@@ -61,7 +70,8 @@ public:
     {
         std::vector<double> dist(V, INF);
         std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>,
-                            std::greater<std::pair<double, int>>> pq;
+                            std::greater<std::pair<double, int>>>
+            pq;
         dist[source] = 0.0;
         pq.push(std::make_pair(0.0, source));
 
@@ -146,20 +156,23 @@ public:
 
     void kShortestPaths(int source, int target, int k, std::vector<int> &parent)
     {
-        std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
+        std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
+        // std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
 
-        std::vector<Arc> initialPath;
-        initialPath.push_back(Arc(source, source, 0.0));
+        Path initialPath;
+        // Path initialPath(std::vector<Arc>(source, source), 0,0);
+        // (const std::vector<Arc> arcs, double cost)
+        initialPath.arcs.push_back(Arc(source, source, 0.0));
         pq.push(initialPath);
 
         int pathCount = 0;
 
         while (!pq.empty() && pathCount < k)
         {
-            std::vector<Arc> path = pq.top();
+            Path path = pq.top();
             pq.pop();
 
-            int u = path.back().end;
+            int u = path.arcs.back().end;
 
             if (u == target)
             {
@@ -174,8 +187,8 @@ public:
 
             for (const Arc &arc : adjList[u])
             {
-                std::vector<Arc> newPath = path;
-                newPath.push_back(arc);
+                Path newPath = path;
+                newPath.arcs.push_back(arc);
                 pq.push(newPath);
             }
         }
@@ -183,10 +196,10 @@ public:
         std::cout << "Number of paths found: " << pathCount << std::endl;
     }
 
-    void printPath(const std::vector<Arc> &path)
+    void printPath(const Path &path)
     {
         std::cout << "Path: ";
-        for (const Arc &arc : path)
+        for (const Arc &arc : path.arcs)
         {
             std::cout << arc.start << "->" << arc.end << " ";
         }
