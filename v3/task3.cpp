@@ -21,14 +21,6 @@ struct Arc
     Arc(int start, int end, double cost) : start(start), end(end), cost(cost) {}
 };
 
-struct Path
-{
-    std::vector<int> vertices;
-    double cost;
-
-    Path(const std::vector<int> &vertices, double cost) : vertices(vertices), cost(cost) {}
-};
-
 bool ComparePaths(const std::vector<Arc> &p1, const std::vector<Arc> &p2)
 {
     double p1Cost = 0.0;
@@ -69,8 +61,7 @@ public:
     {
         std::vector<double> dist(V, INF);
         std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>,
-                            std::greater<std::pair<double, int>>>
-            pq;
+                            std::greater<std::pair<double, int>>> pq;
         dist[source] = 0.0;
         pq.push(std::make_pair(0.0, source));
 
@@ -225,14 +216,14 @@ public:
     }
 };
 
-void processInputFile(const std::string &filename, Graph &graph)
+void processInputFile(const std::string &filename, Graph &graph, int &nb_points)
 {
     std::ifstream is(filename);
     std::string line;
     std::getline(is, line, '\n');
     std::stringstream ls;
     ls << line;
-    int nb_points, nb_arcs;
+    int nb_arcs;
     ls >> nb_points >> nb_arcs;
 
     graph = Graph(nb_points); // Update the graph with the correct number of vertices
@@ -258,7 +249,7 @@ bool endPointsCheck(int source, int target, int nb_points)
         std::cout << "Invalid source or target vertex." << std::endl;
         return false;
     }
-    
+
     return true;
 }
 
@@ -279,20 +270,22 @@ int main()
     int nb_points, nb_arcs;
     Graph graph(0);
 
-    processInputFile("testtest.txt", graph);
+    processInputFile("testtest.txt", graph, nb_points);
 
     int source, target;
     std::cout << "Enter the source vertex and target vertex: ";
     std::cin >> source >> target;
 
-    if (endPointsCheck(source, target, nb_points) == false) {
+    if (endPointsCheck(source, target, nb_points) == false)
+    {
         return -1;
     }
 
     std::vector<int> parent(nb_points, -1);
     std::vector<double> dist = graph.dijkstra(source, parent);
 
-    if (pathCheck(target, dist) == false) {
+    if (pathCheck(target, dist) == false)
+    {
         return -1;
     }
 
