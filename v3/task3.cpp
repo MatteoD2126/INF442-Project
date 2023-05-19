@@ -33,7 +33,7 @@ struct Path
     {
         arcs.push_back(arc);
         return cost += arc.cost;
-    }    
+    }
 };
 
 bool ComparePaths(const Path &p1, const Path &p2)
@@ -163,9 +163,11 @@ public:
     void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
+        std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
 
+        // Initialize with a path containing only the source vertex
         Path initialPath;
-        initialPath.arcs.push_back(Arc(source, source, 0.0));
+        initialPath.addArc(Arc(source, source, 0.0));
         pq.push(initialPath);
 
         int pathCount = 0;
@@ -177,8 +179,9 @@ public:
 
             int u = path.arcs.back().end;
 
-            if (pathCount < k)
+            if (!visited[source][u])
             {
+                visited[source][u] = true;
                 pathCount++;
                 printPath(path);
             }
@@ -186,8 +189,6 @@ public:
             for (const Arc &arc : adjList[u])
             {
                 Path newPath = path;
-                // newPath.arcs.push_back(arc);
-                // newPath.editCost(arc.cost);
                 newPath.addArc(arc);
                 pq.push(newPath);
             }
