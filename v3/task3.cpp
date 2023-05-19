@@ -235,6 +235,8 @@ void processInputFile(const std::string &filename, Graph &graph)
     int nb_points, nb_arcs;
     ls >> nb_points >> nb_arcs;
 
+    graph = Graph(nb_points); // Update the graph with the correct number of vertices
+
     int v1, v2;
     double weight;
     int res;
@@ -248,23 +250,61 @@ void processInputFile(const std::string &filename, Graph &graph)
     }
 }
 
+bool endPointsCheck(int source, int target, int nb_points)
+{
+    // Check if source and target vertices are valid
+    if (source < 0 || source >= nb_points || target < 0 || target >= nb_points)
+    {
+        std::cout << "Invalid source or target vertex." << std::endl;
+        return false;
+    }
+    
+    return true;
+}
+
+bool pathCheck(int target, std::vector<double> &dist)
+{
+    // Check if a path exists between the source and target vertices
+    if (dist[target] == INF)
+    {
+        std::cout << "There is no path between the source and target vertices." << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 int main()
 {
     int nb_points, nb_arcs;
-    Graph graph(nb_points);
+    Graph graph(0);
+
     processInputFile("testtest.txt", graph);
-    // processInputFile("rcsp1.txt", graph);
 
     int source, target;
     std::cout << "Enter the source vertex and target vertex: ";
     std::cin >> source >> target;
 
+    if (endPointsCheck(source, target, nb_points) == false) {
+        return -1;
+    }
+
     std::vector<int> parent(nb_points, -1);
     std::vector<double> dist = graph.dijkstra(source, parent);
+
+    if (pathCheck(target, dist) == false) {
+        return -1;
+    }
 
     std::cout << "Shortest distance from source to target: " << dist[target] << std::endl;
 
     graph.printShortestPath(parent, target);
+
+    int k;
+    std::cout << "Enter the value of k: ";
+    std::cin >> k;
+
+    graph.kShortestPaths(source, target, k, parent);
 
     return 0;
 }
