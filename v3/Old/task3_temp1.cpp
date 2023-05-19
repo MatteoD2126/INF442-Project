@@ -61,7 +61,8 @@ public:
     {
         std::vector<double> dist(V, INF);
         std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>,
-                            std::greater<std::pair<double, int>>> pq;
+                            std::greater<std::pair<double, int>>>
+            pq;
         dist[source] = 0.0;
         pq.push(std::make_pair(0.0, source));
 
@@ -144,40 +145,39 @@ public:
         return dist;
     }
 
-void kShortestPaths(int source, int k, std::vector<int> &parent)
-{
-    std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
-
-    std::vector<Arc> initialPath;
-    initialPath.push_back(Arc(source, source, 0.0));
-    pq.push(initialPath);
-
-    int pathCount = 0;
-
-    while (!pq.empty() && pathCount < k)
+    void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
-        std::vector<Arc> path = pq.top();
-        pq.pop();
+        std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
 
-        int u = path.back().end;
+        std::vector<Arc> initialPath;
+        initialPath.push_back(Arc(source, source, 0.0));
+        pq.push(initialPath);
 
-        if (pathCount < k)
+        int pathCount = 0;
+
+        while (!pq.empty() && pathCount < k)
         {
-            pathCount++;
-            printPath(path);
+            std::vector<Arc> path = pq.top();
+            pq.pop();
+
+            int u = path.back().end;
+
+            if (pathCount < k)
+            {
+                pathCount++;
+                printPath(path);
+            }
+
+            for (const Arc &arc : adjList[u])
+            {
+                std::vector<Arc> newPath = path;
+                newPath.push_back(arc);
+                pq.push(newPath);
+            }
         }
 
-        for (const Arc &arc : adjList[u])
-        {
-            std::vector<Arc> newPath = path;
-            newPath.push_back(arc);
-            pq.push(newPath);
-        }
+        std::cout << "Number of paths found: " << pathCount << std::endl;
     }
-
-    std::cout << "Number of paths found: " << pathCount << std::endl;
-}
-
 
     void printPath(const std::vector<Arc> &path)
     {

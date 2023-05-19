@@ -28,6 +28,12 @@ struct Path
 
     Path() : cost(0.0) {}
     Path(const std::vector<Arc> &arcs, double cost) : arcs(arcs), cost(cost) {}
+
+    double addArc(Arc arc)
+    {
+        arcs.push_back(arc);
+        return cost += arc.cost;
+    }    
 };
 
 bool ComparePaths(const Path &p1, const Path &p2)
@@ -154,14 +160,11 @@ public:
         return dist;
     }
 
-    void kShortestPaths(int source, int target, int k, std::vector<int> &parent)
+    void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
-        // std::priority_queue<std::vector<Arc>, std::vector<std::vector<Arc>>, decltype(&ComparePaths)> pq(&ComparePaths);
 
         Path initialPath;
-        // Path initialPath(std::vector<Arc>(source, source), 0,0);
-        // (const std::vector<Arc> arcs, double cost)
         initialPath.arcs.push_back(Arc(source, source, 0.0));
         pq.push(initialPath);
 
@@ -174,26 +177,21 @@ public:
 
             int u = path.arcs.back().end;
 
-            if (u == target)
+            if (pathCount < k)
             {
                 pathCount++;
                 printPath(path);
             }
 
-            if (pathCount == k)
-            {
-                break;
-            }
-
             for (const Arc &arc : adjList[u])
             {
                 Path newPath = path;
-                newPath.arcs.push_back(arc);
+                // newPath.arcs.push_back(arc);
+                // newPath.editCost(arc.cost);
+                newPath.addArc(arc);
                 pq.push(newPath);
             }
         }
-
-        std::cout << "Number of paths found: " << pathCount << std::endl;
     }
 
     void printPath(const Path &path)
@@ -276,7 +274,7 @@ bool pathCheck(int target, std::vector<double> &dist)
     }
 
     return true;
-}
+};
 
 int main()
 {
@@ -310,7 +308,7 @@ int main()
     std::cout << "Enter the value of k: ";
     std::cin >> k;
 
-    graph.kShortestPaths(source, target, k, parent);
+    graph.kShortestPaths(source, k, parent);
 
     return 0;
 }
