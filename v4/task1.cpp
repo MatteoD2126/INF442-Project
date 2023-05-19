@@ -12,7 +12,7 @@
 #define INF std::numeric_limits<double>::infinity()
 // two chose a sequential or a parallelized version
 #define DIJKSTRAOPTION 1
-#define FILETYPE 0
+#define FILETYPE 1
 
 // the structure for edges in the graph
 struct Arc
@@ -220,8 +220,8 @@ int main()
 {
     int nb_points, nb_arcs;
     Graph graph(nb_points);
-    processInputFile("testtest.txt", graph);
-    // processInputFile("rcsp1.txt", graph);
+    // processInputFile("testtest.txt", graph);
+    processInputFile("rcsp1.txt", graph);
 
     int source, target;
     std::cout << "Enter the source vertex and target vertex: ";
