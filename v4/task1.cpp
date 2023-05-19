@@ -185,9 +185,6 @@ void processInputFile(const std::string &filename, Graph &graph)
         int v1, v2;
         double weight;
         int res;
-        int v1, v2;
-        double weight;
-        int res;
         for (int j = 0; j < nb_arcs; j++)
         {
             std::getline(is, line, '\n');
