@@ -29,7 +29,7 @@ struct Path
     Path() : cost(0.0) {}
     Path(const std::vector<Arc> &arcs, double cost) : arcs(arcs), cost(cost) {}
 
-    double addArc(Arc arc)
+    double addArc(const Arc &arc)
     {
         arcs.push_back(arc);
         return cost += arc.cost;
@@ -46,7 +46,7 @@ bool ComparePaths(const Path &p1, const Path &p2)
     for (const Arc &arc : p2.arcs)
         p2Cost += arc.cost;
 
-    return p1Cost < p2Cost;
+    return p1Cost > p2Cost;
 }
 
 class Graph
@@ -163,35 +163,35 @@ public:
     void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
-        std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
+        // std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
 
         // Initialize with a path containing only the source vertex
         Path initialPath;
         initialPath.addArc(Arc(source, source, 0.0));
         pq.push(initialPath);
 
+        int u = source;
         int pathCount = 0;
-
-        while (!pq.empty() && pathCount < k)
+        
+        while (!adjList[u].empty() && pathCount < k)
         {
-            Path path = pq.top();
-            pq.pop();
-
-            int u = path.arcs.back().end;
-
-            if (!visited[source][u])
-            {
-                visited[source][u] = true;
-                pathCount++;
-                printPath(path);
-            }
-
             for (const Arc &arc : adjList[u])
-            {
-                Path newPath = path;
-                newPath.addArc(arc);
-                pq.push(newPath);
-            }
+
+                while (!pq.empty() && pathCount < k)
+                {
+                    Path path = pq.top();
+                    pq.pop();
+                    int u = path.arcs.back().end;
+                    pathCount++;
+                    printPath(path);
+
+                    for (const Arc &arc : adjList[u])
+                    {
+                        Path newPath = path;
+                        newPath.addArc(arc);
+                        pq.push(newPath);
+                    }
+                }
         }
     }
 
