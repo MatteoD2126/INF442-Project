@@ -163,35 +163,35 @@ public:
     void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
-        // std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
+        std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
 
         // Initialize with a path containing only the source vertex
         Path initialPath;
         initialPath.addArc(Arc(source, source, 0.0));
         pq.push(initialPath);
 
-        int u = source;
         int pathCount = 0;
-        
-        while (!adjList[u].empty() && pathCount < k)
+
+        while (!pq.empty() && pathCount < k)
         {
+            Path path = pq.top();
+            pq.pop();
+
+            int u = path.arcs.back().end;
+
+            if (!visited[source][u])
+            {
+                visited[source][u] = true;
+                pathCount++;
+                printPath(path);
+            }
+
             for (const Arc &arc : adjList[u])
-
-                while (!pq.empty() && pathCount < k)
-                {
-                    Path path = pq.top();
-                    pq.pop();
-                    int u = path.arcs.back().end;
-                    pathCount++;
-                    printPath(path);
-
-                    for (const Arc &arc : adjList[u])
-                    {
-                        Path newPath = path;
-                        newPath.addArc(arc);
-                        pq.push(newPath);
-                    }
-                }
+            {
+                Path newPath = path;
+                newPath.addArc(arc);
+                pq.push(newPath);
+            }
         }
     }
 
