@@ -48,8 +48,7 @@ public:
     {
         std::vector<double> dist(V, INF);
         std::priority_queue<std::pair<double, int>, std::vector<std::pair<double, int>>,
-                            std::greater<std::pair<double, int>>>
-            pq;
+                            std::greater<std::pair<double, int>>> pq;
         dist[source] = 0.0;
         pq.push(std::make_pair(0.0, source));
 
