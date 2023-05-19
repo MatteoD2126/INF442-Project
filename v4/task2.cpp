@@ -9,6 +9,11 @@
 
 #define INF std::numeric_limits<double>::infinity()
 
+double dF(double cost) {
+    // You can modify this function    
+    return 1. / cost;
+}
+
 struct Arc {
     int start;
     int end;
@@ -82,12 +87,6 @@ public:
         std::cout << std::endl;
     }
 };
-
-double dF(double cost) {
-    // Modify this function according to your specific delay calculation
-    // For example, delay = cost^2
-    return 1. / cost;
-}
 
 int main() {
     int nb_points, nb_arcs;
