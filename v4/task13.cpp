@@ -160,7 +160,7 @@ public:
         return dist;
     }
 
-    void kShortestPaths(int source, int k, std::vector<int> &parent)
+    void kShortestPaths(int source, int k)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
         std::vector<bool> visited(std::vector<bool>(V, false));
@@ -309,7 +309,7 @@ int main()
     std::cout << "Enter the value of k: ";
     std::cin >> k;
 
-    graph.kShortestPaths(source, k, parent);
+    graph.kShortestPaths(source, k);
 
     return 0;
 }
