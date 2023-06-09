@@ -163,7 +163,7 @@ public:
     void kShortestPaths(int source, int k, std::vector<int> &parent)
     {
         std::priority_queue<Path, std::vector<Path>, decltype(&ComparePaths)> pq(&ComparePaths);
-        std::vector<std::vector<bool>> visited(V, std::vector<bool>(V, false));
+        std::vector<bool> visited(std::vector<bool>(V, false));
 
         // Initialize with a path containing only the source vertex
         Path initialPath;
@@ -179,9 +179,9 @@ public:
 
             int u = path.arcs.back().end;
 
-            if (!visited[source][u])
+            if (!visited[u])
             {
-                visited[source][u] = true;
+                visited[u] = true;
                 pathCount++;
                 printPath(path);
             }
